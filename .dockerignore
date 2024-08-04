@@ -1,0 +1,16 @@
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environments
+venv/
+.venv/
+
+# Ignore version control directories
+.git/
+.gitignore
+
+# Ignore other unnecessary files
+.DS_Store
+

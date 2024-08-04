@@ -2,90 +2,60 @@ import json
 
 import requests
 
-baseURL = "https://dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=%s&time="
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-}
-locations = ["seasons-marketplace-2-2",
-             "conversations-2",
-             "union-drive-marketplace-2-2",
-             "friley-windows-2-2"]
+from Resources.variables import target_categories, locations, liked_foods, baseURL, headers
 
 todays_food = []
-liked_foods = ["Cheese Pizza",
-               "Pepperoni Pizza"]
 
 all_foods = []  # replace with a db at some point as this should be persistent
 
-breakfast = []
-brunch = []  # not sure what place has brunch
-lunch = []
-dinner = []
-late_night = []
 
-meals = [
-    breakfast,
-    brunch,
-    lunch,
-    dinner,
-    late_night
-]
-
-
+# This works, but I have the striking suspicion that this can be more efficient
+# and not create 1000 of essentially the same thing
 def get_foods_from_menus(all_data):
-    menus = all_data.get("menus")
-    location = all_data.get("slug")
+    menus = all_data[0].get("menus")
+    location = all_data[0].get("slug")
 
     if not menus or not location:
         return
 
-    if location is locations[0]:  # seasons
-        # breakfast, lunch, dinner
-        pass
+    for menu in menus:
 
-    if location is locations[1]:  # convos
-        # lunch, dinner, late night
-        pass
+        section = menu.get("section", "")
+        menuDisplays = menu.get("menuDisplays", [])
 
-    if location is locations[2]:  # udcc - I only know these mappings atp
-        # breakfast, lunch, dinner
+        for menuDisplay in menuDisplays:
+            categories = menuDisplay.get("categories", [])
 
-        for menu in menus:
+            for category in categories:
 
-            section = menu.get("section", "")
-            menuDisplays = menu.get("menuDisplays", [])
+                if category.get("category", "") in target_categories:
 
-            for menuDisplay in menuDisplays:
-                pass
+                    for menuItem in category.get("menuItems", []):
 
+                        name = menuItem.get("name", "")
+                        food = {
+                            "name": name,
+                            "location": location,
+                            "section": section
+                        }
 
+                        if name not in all_foods:
+                            all_foods.append(name)
 
-        pass
-
-    if location is locations[3]:  # windows
-        # lunch, dinner, late night
-        pass
-
-    # if menu.get("section", "") is "breakfast":
-    #     menu.get("menuDisplays", [])
-    # if menu.get("section", "") is "brunch":
-    #     pass
-    # if menu.get("section", "") is "lunch":
-    #     pass
-    # if menu.get("section", "") is "dinner":
-    #     pass
-    # if menu.get("section", "") is "late_night":
-    #     pass
+                        todays_food.append(food)
 
 
 def notify():
+    #TODO
     pass
 
 
 def check_and_notify_if_liked_food_is_on_menu():
     for food in todays_food:
-        if food in liked_foods:
+        if food.get("name", "") in liked_foods:
             notify()
+
+    todays_food.clear()
 
 
 def main():
