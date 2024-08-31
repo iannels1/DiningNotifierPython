@@ -2,11 +2,14 @@ import json
 
 import requests
 
-from Resources.variables import target_categories, locations, liked_foods, baseURL, headers
+from DiningNotifier.emailHelper import send_email
+from Resources.variables import target_categories, locations, liked_foods, headers, base_URL
 
-todays_food = []
+today_food = []
 
 all_foods = []  # replace with a db at some point as this should be persistent
+
+location_hours = []
 
 
 # This works, but I have the striking suspicion that this can be more efficient
@@ -21,55 +24,70 @@ def get_foods_from_menus(all_data):
     for menu in menus:
 
         section = menu.get("section", "")
-        menuDisplays = menu.get("menuDisplays", [])
+        menu_displays = menu.get("menuDisplays", [])
 
-        for menuDisplay in menuDisplays:
+        for menuDisplay in menu_displays:
             categories = menuDisplay.get("categories", [])
 
             for category in categories:
 
                 if category.get("category", "") in target_categories:
 
-                    for menuItem in category.get("menuItems", []):
+                    for menu_item in category.get("menuItems", []):
 
-                        name = menuItem.get("name", "")
+                        name = menu_item.get("name", "")
                         food = {
                             "name": name,
                             "location": location,
-                            "section": section
+                            "meal": section
                         }
 
                         if name not in all_foods:
                             all_foods.append(name)
 
-                        todays_food.append(food)
+                        today_food.append(food)
 
 
-def notify():
-    #TODO
-    pass
+def notify(food: dict):
+    food_name = food.get("name", "")
+    location = food.get("location", "")
+    meal = food.get("meal", "")
+    start_time = ""
+    end_time = ""
+
+    for location_day in location_hours:
+        for location_meal in location_day.get("hours"):
+            if meal == location_meal.get("name") and location == location_day.get("location"):
+                start_time = location_meal.get("start_time", "")
+                end_time = location_meal.get("end_time", "")
+
+    body = f"{food_name} at {location} for {meal} from {start_time} to {end_time}"
+
+    send_email("iannels@iastate.edu", body)
+    print(f"email sent, body: {body}")
 
 
 def check_and_notify_if_liked_food_is_on_menu():
-    for food in todays_food:
+    for food in today_food:
         if food.get("name", "") in liked_foods:
-            notify()
+            notify(food)
 
-    todays_food.clear()
+    today_food.clear()
 
 
 def main():
     all_menus = []
 
     for location in locations:
-        url = baseURL % location
+        url = base_URL % location
 
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         all_data = response.json()
 
-        if not all_data:
-            continue
+        location_hours.append({"location": location,
+                               "hours": all_data[0].get("todaysHours", "")
+                               })
 
         get_foods_from_menus(all_data)
 
