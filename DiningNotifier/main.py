@@ -2,11 +2,14 @@ import json
 
 import requests
 
+from DiningNotifier.emailHelper import send_email
 from Resources.variables import target_categories, locations, liked_foods, headers, base_URL
 
 today_food = []
 
 all_foods = []  # replace with a db at some point as this should be persistent
+
+location_hours = []
 
 
 # This works, but I have the striking suspicion that this can be more efficient
@@ -36,7 +39,7 @@ def get_foods_from_menus(all_data):
                         food = {
                             "name": name,
                             "location": location,
-                            "section": section
+                            "meal": section
                         }
 
                         if name not in all_foods:
@@ -45,15 +48,29 @@ def get_foods_from_menus(all_data):
                         today_food.append(food)
 
 
-def notify():
-    #TODO
-    pass
+def notify(food: dict):
+    food_name = food.get("name", "")
+    location = food.get("location", "")
+    meal = food.get("meal", "")
+    start_time = ""
+    end_time = ""
+
+    for location_day in location_hours:
+        for location_meal in location_day.get("hours"):
+            if meal == location_meal.get("name") and location == location_day.get("location"):
+                start_time = location_meal.get("start_time", "")
+                end_time = location_meal.get("end_time", "")
+
+    body = f"{food_name} at {location} for {meal} from {start_time} to {end_time}"
+
+    send_email("iannels@iastate.edu", body)
+    print(f"email sent, body: {body}")
 
 
 def check_and_notify_if_liked_food_is_on_menu():
     for food in today_food:
         if food.get("name", "") in liked_foods:
-            notify()
+            notify(food)
 
     today_food.clear()
 
@@ -68,8 +85,9 @@ def main():
         response.raise_for_status()
         all_data = response.json()
 
-        if not all_data:
-            continue
+        location_hours.append({"location": location,
+                               "hours": all_data[0].get("todaysHours", "")
+                               })
 
         get_foods_from_menus(all_data)
 

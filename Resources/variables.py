@@ -9,11 +9,15 @@ locations = ["seasons-marketplace-2-2",
              "union-drive-marketplace-2-2",
              "friley-windows-2-2"]
 
-liked_foods = ["Cheese Pizza",
-               "Pepperoni Pizza"]
+liked_foods = ["Smoked Turkey"]
 
 target_categories = ["Entree",
                      "Pasta Bar",
                      "Sides",
                      "Soups",
                      "Pizza"]
+
+# really need a secrets manager for this stuff
+smtp_sender = "isudining2@gmail.com"
+smpt_password = "uype msqg mdpp xndp"  # app specific but still not great
+smpt_server = "smtp.gmail.com:587"
