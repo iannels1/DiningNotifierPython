@@ -1,4 +1,5 @@
 import json
+import time
 
 import requests
 
@@ -72,28 +73,38 @@ def check_and_notify_if_liked_food_is_on_menu():
         if food.get("name", "") in liked_foods:
             notify(food)
 
+
+def clear_all():
     today_food.clear()
+    all_foods.clear()
+    location_hours.clear()
+
 
 
 def main():
-    all_menus = []
+    while True:
+        all_menus = []
 
-    for location in locations:
-        url = base_URL % location
+        for location in locations:
+            url = base_URL % location
 
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        all_data = response.json()
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            all_data = response.json()
 
-        location_hours.append({"location": location,
-                               "hours": all_data[0].get("todaysHours", "")
-                               })
+            location_hours.append({"location": location,
+                                   "hours": all_data[0].get("todaysHours", "")
+                                   })
 
-        get_foods_from_menus(all_data)
+            get_foods_from_menus(all_data)
 
-        all_menus.append(all_data)
+            all_menus.append(all_data)
 
-    check_and_notify_if_liked_food_is_on_menu()
+        check_and_notify_if_liked_food_is_on_menu()
+
+        clear_all()
+
+        time.sleep(86400)
 
 
 if __name__ == '__main__':
