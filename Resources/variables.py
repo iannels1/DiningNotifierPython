@@ -1,6 +1,6 @@
 
 
-baseURL = "https://dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=%s&time="
+base_URL = "https://dining.iastate.edu/wp-json/dining/menu-hours/get-single-location/?slug=%s&time="
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
 }

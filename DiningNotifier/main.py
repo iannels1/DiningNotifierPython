@@ -2,9 +2,9 @@ import json
 
 import requests
 
-from Resources.variables import target_categories, locations, liked_foods, baseURL, headers
+from Resources.variables import target_categories, locations, liked_foods, headers, base_URL
 
-todays_food = []
+today_food = []
 
 all_foods = []  # replace with a db at some point as this should be persistent
 
@@ -21,18 +21,18 @@ def get_foods_from_menus(all_data):
     for menu in menus:
 
         section = menu.get("section", "")
-        menuDisplays = menu.get("menuDisplays", [])
+        menu_displays = menu.get("menuDisplays", [])
 
-        for menuDisplay in menuDisplays:
+        for menuDisplay in menu_displays:
             categories = menuDisplay.get("categories", [])
 
             for category in categories:
 
                 if category.get("category", "") in target_categories:
 
-                    for menuItem in category.get("menuItems", []):
+                    for menu_item in category.get("menuItems", []):
 
-                        name = menuItem.get("name", "")
+                        name = menu_item.get("name", "")
                         food = {
                             "name": name,
                             "location": location,
@@ -42,7 +42,7 @@ def get_foods_from_menus(all_data):
                         if name not in all_foods:
                             all_foods.append(name)
 
-                        todays_food.append(food)
+                        today_food.append(food)
 
 
 def notify():
@@ -51,18 +51,18 @@ def notify():
 
 
 def check_and_notify_if_liked_food_is_on_menu():
-    for food in todays_food:
+    for food in today_food:
         if food.get("name", "") in liked_foods:
             notify()
 
-    todays_food.clear()
+    today_food.clear()
 
 
 def main():
     all_menus = []
 
     for location in locations:
-        url = baseURL % location
+        url = base_URL % location
 
         response = requests.get(url, headers=headers)
         response.raise_for_status()
