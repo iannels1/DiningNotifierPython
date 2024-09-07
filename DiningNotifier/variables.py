@@ -9,7 +9,7 @@ locations = ["seasons-marketplace-2-2",
              "union-drive-marketplace-2-2",
              "friley-windows-2-2"]
 
-liked_foods = ["Smoked Turkey"]
+liked_foods = ["Smoked Brisket"]
 
 target_categories = ["Entree",
                      "Pasta Bar",
