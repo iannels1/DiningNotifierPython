@@ -105,6 +105,8 @@ def main():
 
         clear_all()
 
+        print("day finished")
+
         time.sleep(86400)
 
 
