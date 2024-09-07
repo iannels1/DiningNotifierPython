@@ -4,7 +4,7 @@ import time
 
 import requests
 
-from DiningNotifier.emailHelper import send_email
+from emailHelper import send_email
 from Resources.variables import target_categories, locations, liked_foods, headers, base_URL
 
 today_food = []
