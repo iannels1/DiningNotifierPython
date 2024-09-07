@@ -17,7 +17,4 @@ target_categories = ["Entree",
                      "Soups",
                      "Pizza"]
 
-# really need a secrets manager for this stuff
-smtp_sender = "isudining2@gmail.com"
-smpt_password = "uype msqg mdpp xndp"  # app specific but still not great
 smpt_server = "smtp.gmail.com:587"

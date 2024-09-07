@@ -1,4 +1,5 @@
 import json
+import os
 import time
 
 import requests
@@ -64,7 +65,7 @@ def notify(food: dict):
 
     body = f"{food_name} at {location} for {meal} from {start_time} to {end_time}"
 
-    send_email("iannels@iastate.edu", body)
+    send_email(os.environ["Receiver"], body)
     print(f"email sent, body: {body}")
 
 
@@ -82,7 +83,7 @@ def clear_all():
 
 
 def main():
-    send_email("iannels@iastate.edu", "program started")
+    send_email(os.environ["Receiver"], "program started")
     while True:
         all_menus = []
 

@@ -1,3 +1,4 @@
+import os
 import smtplib
 from email.mime.text import MIMEText
 
@@ -5,6 +6,9 @@ from Resources.variables import smtp_sender, smpt_password, smpt_server
 
 
 def send_email(recipient: str, body: str):
+
+    smpt_sender = os.environ["gmail_address"]
+    smpt_password = os.environ["gmail_password"]
 
     msg = MIMEText(body, "plain")
     msg['Subject'] = 'Favorite Food is on the Menu!'
