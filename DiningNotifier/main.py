@@ -82,6 +82,7 @@ def clear_all():
 
 
 def main():
+    send_email("iannels@iastate.edu", "program started")
     while True:
         all_menus = []
 
