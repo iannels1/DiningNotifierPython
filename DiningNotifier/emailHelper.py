@@ -2,7 +2,7 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 
-from Resources.variables import smpt_server
+from variables import smpt_server
 
 
 def send_email(recipient: str, body: str):
