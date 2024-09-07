@@ -7,8 +7,8 @@ from variables import smpt_server
 
 def send_email(recipient: str, body: str):
 
-    smpt_sender = os.environ["gmail_address"]
-    smpt_password = os.environ["gmail_password"]
+    smtp_sender = os.environ["gmail_address"]
+    smtp_password = os.environ["gmail_password"]
 
     msg = MIMEText(body, "plain")
     msg['Subject'] = 'Favorite Food is on the Menu!'
@@ -18,7 +18,7 @@ def send_email(recipient: str, body: str):
     try:
         with smtplib.SMTP(smpt_server) as server:
             server.starttls()
-            server.login(smtp_sender, smpt_password)
+            server.login(smtp_sender, smtp_password)
             server.sendmail(smtp_sender, recipient, msg.as_string())
 
     except smtplib.SMTPException as e:

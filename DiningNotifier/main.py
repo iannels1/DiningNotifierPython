@@ -64,7 +64,7 @@ def notify(food: dict):
 
     body = f"{food_name} at {location} for {meal} from {start_time} to {end_time}"
 
-    send_email(os.environ["Receiver"], body)
+    send_email(os.environ["receiver"], body)
     print(f"email sent, body: {body}")
 
 
@@ -82,7 +82,7 @@ def clear_all():
 
 
 def main():
-    send_email(os.environ["Receiver"], "program started")
+    send_email(os.environ["receiver"], "program started")
     while True:
         all_menus = []
 
